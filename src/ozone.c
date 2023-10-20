@@ -18,22 +18,22 @@ int main(int argc, char **argv) {
   env.w = COLS;
   env.h = LINES;
   env.tabsize = 2;
+  env.doubleclickt = 500.f;
+  env.theme.fores[fore_plain_e] = (color_t){255, 80, 118};
+  env.theme.backs[back_primary_e] = (color_t){43, 36, 37};
+
+  io_mkdir("~/.ozone/test");
+
+  lua_State *L = lsc_prepstate();
+  lsc_runscript(L, "~/.ozone/scripts/config.lua");
+
+  
+  
 
   // TODO: Add utf8 support to the string helper functions
-
-  int phi = utf8_literal('🔥');
-
-  /*
-  const char *yes = "🔥🔥";
-  const long l = utf8_strlen(yes);
-  printf("%li\n", l);
-  printf("%li\n", utf8_actual(yes, 1));
-  */
   
-  resize_buffers(&env);
-
-
-  /*
+  //resize_buffers(&env);
+  
 
   initscr();
   cbreak();
@@ -42,7 +42,17 @@ int main(int argc, char **argv) {
   set_tabsize(env.tabsize);
   noecho();
   start_color();
+  // Don't mask any mouse events
+  mousemask(BUTTON1_PRESSED | BUTTON1_RELEASED, NULL);
+  mouseinterval(0);
 
+  sty_initplain(&env.theme);
+
+  sty_setforeground(&env.style, (color_t){255, 80, 118});
+  sty_setbackground(&env.style, (color_t){43, 36, 37});
+
+  sty_swap(&env.style);
+  
   resize_buffers(&env);
 
   
@@ -51,27 +61,51 @@ int main(int argc, char **argv) {
 
   int ch = 0;
   int rsz = 0;
+  int x, y = 0;
+  timepoint_t lclick;
   while ((ch = getch()) != 0x1b) {
+    move(0, 0);
     switch (ch) {
       case KEY_RESIZE: {
         resize_buffers(&env);
         ++rsz;
         break;
       }
+      case KEY_MOUSE: {
+        MEVENT mev = {0};
+        if (getmouse(&mev) == OK) {
+          ch = mev.bstate;
+          ++rsz;
+          mvprintw(0, 0, "%i, %i\n", y-mev.y, x-mev.x);
+          if (mev.bstate == 1) {
+            if (timeduration(timenow(), lclick, milliseconds_e) < env.doubleclickt && abs(y-mev.y)<=2 && abs(x-mev.x)<=2) {
+              
+              mvprintw(1,0,"Double click!\n");
+              
+            } else {
+              mvprintw(1,0,"Single click!\n");
+            }
+            lclick = timenow();
+            y = mev.y;
+            x = mev.x;
+          } else {
+            
+          }
+        }
+        break;
+      }
       default:
       break;
     }
-    mvprintw(0, 0, "%i, %i, %i, %i ", env.w, env.h, rsz, ch);
-    move(0, 0);
+    
+    mvprintw(2, 0,"%i, %i, %i, %i ", env.w, env.h, rsz, ch);
+    move(y, x);
     refresh();
   }
 
-  move(0, 0);
-  refresh();
-
 
   endwin();
-  */
+  
 
 
 

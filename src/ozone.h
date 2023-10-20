@@ -5,10 +5,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/select.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <ncurses.h>
 #include <assert.h>
 #include <math.h>
+#ifndef __USE_MISC
+#	define __USE_MISC
+#endif
+#include <dirent.h>
+#include "theme.h"
 
 typedef unsigned char u_char;
 
@@ -137,7 +143,7 @@ char *str_fmt(const char *fmt, ...);
 
 const char *str_cpy(const char *src, size_t bytes);
 
-char *str_grow(char *src, const char *nstr, size_t bytes);
+char *str_append(char *src, const char *nstr, size_t bytes);
 
 /*
 	* Replaces a section of `src` with `str`
@@ -167,6 +173,14 @@ int utf8_literal(int utf8);
 
 #pragma endregion "String"
 
+char *io_fixhome(const char *path);
+
+char io_direxists(const char *path);
+
+char io_exists(const char *path);
+
+void io_mkdir(const char *path);
+
 typedef struct _env {
   int*              background;
   int*              foreground;
@@ -174,6 +188,9 @@ typedef struct _env {
   int               h;
 	avl_tree_t				*pairs;
 	int								tabsize;
+	float							doubleclickt;
+	theme_t						theme;
+	style_t						style;
 
   
 } _ENV;

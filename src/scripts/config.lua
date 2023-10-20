@@ -1,6 +1,6 @@
 dir = os.getenv("PWD") or io.open("cd"):read()
 home = os.getenv("HOME")
---print(dir)
+print(dir)
 --print(package.path)
 
 local ok, mod = pcall(require, 'ozone')
@@ -13,5 +13,5 @@ if not eok then
   print("Editor require failed")
   
 else
-  edit.init();
+  edit.init()
 end

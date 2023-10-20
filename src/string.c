@@ -137,18 +137,18 @@ char *str_fmtv(const char *fmt, va_list args)
 	while ((e = strchr(fmt, '%')) != NULL)
 	{
 		size_t len = buf ? strlen(buf) : 0;
-		buf = str_grow(buf, fmt, e-fmt);
+		buf = str_append(buf, fmt, e-fmt);
 		len = buf ? strlen(buf) : 0;
 		int extr = 0;
 		switch (*(e+1)) {
 			case 's': { // String
 				const char *s = va_arg(args, char *);
-				buf = str_grow(buf, (s) ? s : "(null)", -1);
+				buf = str_append(buf, (s) ? s : "(null)", -1);
 				break;
 			}
 			case 'c': { // Character
 				char c = (char)va_arg(args, int);
-				buf = str_grow(buf, &c, 1);
+				buf = str_append(buf, &c, 1);
 				break;
 			}
 			case 'x': {
@@ -156,7 +156,7 @@ char *str_fmtv(const char *fmt, va_list args)
 				int l = snprintf(NULL, 0, "%lx", n)+1;
         char nbuf[l];
         snprintf(nbuf, l, "%lx", n);
-        buf = str_grow(buf, nbuf, -1);
+        buf = str_append(buf, nbuf, -1);
 				break;
 			}
 			case 'i': { // 32 bit integer
@@ -164,7 +164,7 @@ char *str_fmtv(const char *fmt, va_list args)
 				int l = snprintf(NULL, 0, "%i", n)+1;
         char numbuf[l];
         snprintf(numbuf, l, "%i", n);
-        buf = str_grow(buf, numbuf, -1);
+        buf = str_append(buf, numbuf, -1);
 				break;
 			}
 			case 'l': { // 64 bit integer
@@ -173,16 +173,16 @@ char *str_fmtv(const char *fmt, va_list args)
 					int l = snprintf(NULL, 0, "%lu", n)+1;
           char numbuf[l];
           snprintf(numbuf, l, "%lu", n);
-          buf = str_grow(buf, numbuf, -1);
+          buf = str_append(buf, numbuf, -1);
 					extr+=1;
 					break;
 				}
 				long n = va_arg(args, long);
 				int l = snprintf(NULL, 0, "%li", n)+1;
-        buf = str_grow(buf, "(null)", npos);
+        buf = str_append(buf, "(null)", npos);
         char numbuf[l];
         snprintf(numbuf, l, "%li", n);
-        buf = str_grow(buf, numbuf, -1);
+        buf = str_append(buf, numbuf, -1);
 				break;
 			}
 			case 'f': { // 64 bit float
@@ -190,7 +190,7 @@ char *str_fmtv(const char *fmt, va_list args)
 				int l = snprintf(NULL, 0, "%lf", n)+1;
         char numbuf[l];
         snprintf(numbuf, l, "%lf", n);
-        buf = str_grow(buf, numbuf, -1);
+        buf = str_append(buf, numbuf, -1);
 				break;
 			}
 			case 'd': { // 64 bit float
@@ -198,7 +198,7 @@ char *str_fmtv(const char *fmt, va_list args)
 				int l = snprintf(NULL, 0, "%lf", n)+1;
         char numbuf[l];
         snprintf(numbuf, l, "%lf", n);
-        buf = str_grow(buf, numbuf, -1);
+        buf = str_append(buf, numbuf, -1);
 				break;
 			}
 			case 'u': { // Possible long unsigned
@@ -206,17 +206,17 @@ char *str_fmtv(const char *fmt, va_list args)
 				int l = snprintf(NULL, 0, "%u", n)+1;
         char numbuf[l];
         snprintf(numbuf, l, "%u", n);
-        buf = str_grow(buf, numbuf, -1);
+        buf = str_append(buf, numbuf, -1);
 				break;
 			}
 			case '%': {
-				buf = str_grow(buf, "%", 1);
+				buf = str_append(buf, "%", 1);
 				break;
 			}
 		}
 		fmt = e+2+extr;
 	}
-	buf = str_grow(buf, fmt, -1);
+	buf = str_append(buf, fmt, -1);
 	return buf;
 }
 
@@ -238,18 +238,19 @@ const char *str_cpy(const char *src, size_t bytes)
 	return cpy;
 }
 
-char *str_grow(char *src, const char *nstr, size_t bytes)
+char *str_append(char *src, const char *nstr, size_t bytes)
 {
 	if (!nstr || !strlen(nstr) || !bytes)
 		return src;
 	const size_t l = src ? strlen(src) : 0;
 	const size_t l2 = MIN(strlen(nstr), bytes);
 	char *buf = malloc(l+l2+1);
+	//memset(buf, 0, l+l2+1);
 	if (src) {
 		memcpy(buf, src, l);
 		free(src);
 	}
-	memcpy(((char*)buf)+l, nstr, l2);
+	memcpy(((char*)buf)+l, nstr, l2+1);
 	return buf;
 }
 
