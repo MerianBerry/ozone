@@ -47,11 +47,6 @@ int main(int argc, char **argv) {
   mouseinterval(0);
 
   sty_initplain(&env.theme);
-
-  sty_setforeground(&env.style, (color_t){255, 80, 118});
-  sty_setbackground(&env.style, (color_t){43, 36, 37});
-
-  sty_swap(&env.style);
   
   resize_buffers(&env);
 
@@ -64,6 +59,7 @@ int main(int argc, char **argv) {
   int x, y = 0;
   timepoint_t lclick;
   while ((ch = getch()) != 0x1b) {
+    sty_initplain(&env.theme);
     move(0, 0);
     switch (ch) {
       case KEY_RESIZE: {
@@ -77,10 +73,20 @@ int main(int argc, char **argv) {
           ch = mev.bstate;
           ++rsz;
           mvprintw(0, 0, "%i, %i\n", y-mev.y, x-mev.x);
-          if (mev.bstate == 1) {
-            if (timeduration(timenow(), lclick, milliseconds_e) < env.doubleclickt && abs(y-mev.y)<=2 && abs(x-mev.x)<=2) {
-              
+          if (mev.bstate == 2) {
+            mvprintw(3, 0, "Click!\n");
+          } else {
+            mvprintw(3, 0, "No click!\n");
+          }
+          if (mev.bstate == 2) {
+            if (timeduration(timenow(), lclick, milliseconds_e) < env.doubleclickt
+            && abs(y-mev.y)<=2 && abs(x-mev.x)<=2) {
+              style_t old = sty_getstyle(&env.theme);
+              style_t sg = old;
+              sg.fore = (color_t){37, 186, 104};
+              sty_pushstyle(&env.theme, sg);
               mvprintw(1,0,"Double click!\n");
+              sty_pushstyle(&env.theme, old);
               
             } else {
               mvprintw(1,0,"Single click!\n");
@@ -101,6 +107,7 @@ int main(int argc, char **argv) {
     mvprintw(2, 0,"%i, %i, %i, %i ", env.w, env.h, rsz, ch);
     move(y, x);
     refresh();
+    //sty_resetstyles(&env.theme);
   }
 
 

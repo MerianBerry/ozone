@@ -20,12 +20,9 @@ enum {
   fore_magenta_e,
   fore_custom_e,
 
-  active_back_e = 0x10,
-  active_fore_e,
+  plain_fore_e = 1,
   plain_back_e,
-  plain_fore_e,
-  active_pair_e = 1,
-  plain_pair_e,
+  plain_pair_e = 1,
 };
 
 typedef struct color_s {
@@ -43,12 +40,19 @@ typedef struct theme_s {
   color_t         backs[4];
   color_t         fores[64];
   style_t         styles[254];
+  int             stylei;
 } theme_t;
 
-void sty_setbackground(style_t *s, color_t c);
+int sty_pushstyle(theme_t *t, style_t s);
 
-void sty_setforeground(style_t *s, color_t c);
+void sty_resetstyles(theme_t *t);
 
-void sty_swap(style_t *s);
+color_t sty_getbackground(theme_t *t);
+
+color_t sty_getforeground(theme_t *t);
+
+style_t sty_getstyle(theme_t *t);
+
+void sty_swap(theme_t *t);
 
 void sty_initplain(theme_t *t);
