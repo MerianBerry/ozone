@@ -7,7 +7,6 @@
 #include <sys/select.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <ncurses.h>
 #include <assert.h>
 #include <math.h>
 #ifndef __USE_MISC
@@ -15,6 +14,9 @@
 #endif
 #include <dirent.h>
 #include "theme.h"
+#include <ncurses.h>
+#include <form.h>
+#include <locale.h>
 
 typedef unsigned char u_char;
 
@@ -169,7 +171,9 @@ int utf8_decode(int utf8);
 
 int utf8_swap(int utf8);
 
-int utf8_literal(int utf8);
+int utf8_literal(int utf);
+
+char *utf8_tostring(int utf8);
 
 #pragma endregion "String"
 

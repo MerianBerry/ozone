@@ -5,12 +5,14 @@ print(dir)
 
 local ok, mod = pcall(require, 'ozone')
 if not ok then
-  print("Failed")
+  error("Failed")
 end
+mod:fun("yayayy")
+mod:setstyle({r = 45, g = 2, b = 32})
 
 local eok, edit = pcall(require, "editor.editor")
 if not eok then
-  print("Editor require failed")
+  error("Editor require failed")
   
 else
   edit.init()

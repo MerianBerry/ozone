@@ -1,7 +1,8 @@
 #include "scripts.h"
+#include "api.h"
 #include "ozone.h"
 
-lua_State *lsc_prepstate() {
+lua_State *lsc_prepstate(void *env) {
   lua_State *L = luaL_newstate();
   luaL_openlibs(L);
   lua_getglobal(L, "package");
@@ -16,6 +17,10 @@ lua_State *lsc_prepstate() {
   lua_setfield(L, -2, "path");
   lua_pop(L, 1);
   free(cpath);
+  lua_pushinteger(L, (long)env);
+  lua_setglobal(L, "__OZENV");
+  lua_register(L, "__ozapi_fun", ozapi_fun);
+  lua_register(L, "__ozapi_setstyle", ozapi_setstyle);
   return L;
 }
 

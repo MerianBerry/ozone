@@ -97,12 +97,12 @@ int utf8_swap(int utf8) {
     | (utf8>>16&0xff)<<8 | (utf8>>24&0xff);
 }
 
-int utf8_literal(int utf8) {
+int utf8_literal(int utf) {
   #if 1
   int out = 0;
   int _i = 0;
   for (int i = sizeof(int)-1; i >=0; --i) {
-    u_char c = utf8>>i*8&0xff;
+    u_char c = utf>>i*8&0xff;
     if (c) {
       out |= c<<_i*8;
       ++_i;
@@ -110,10 +110,18 @@ int utf8_literal(int utf8) {
   }
   return out;
   #else
-  int o = utf8_swap(utf8);
+  int o = utf8_swap(utf);
   while (!(o&0xff)) {
     o >>= 8;
   }
   return o;
   #endif
+}
+
+char *utf8_tostring(int utf8) {
+  int l = utf8_charsize(*(u_char*)&utf8);
+  char *str = malloc(l+1);
+  memset(str, 0, l+1);
+  memcpy(str, &utf8, l);
+  return str;
 }

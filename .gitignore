@@ -45,3 +45,7 @@ build/CMakeFiles/ozone.dir/src/string.c.o
 build/CMakeFiles/ozone.dir/src/theme.c.o
 build/CMakeFiles/ozone.dir/src/time.c.o
 build/CMakeFiles/ozone.dir/src/utf8.c.o
+build/.cmake/api/v1/reply/codemodel-v2-b78d5b44e03af99ca8dc.json
+build/.cmake/api/v1/reply/index-2023-10-22T07-10-37-0071.json
+build/.cmake/api/v1/reply/target-ozone-Debug-18cb1cabd47542fd4511.json
+build/CMakeFiles/ozone.dir/src/api.c.o
