@@ -5,7 +5,10 @@ local M = {
   end,
   setstyle = function(self, tab)
     __ozapi_setstyle(self.env, tab)
+  end,
+  addtheme = function(self, mod)
+    __ozapi_addtheme(self.env, mod) 
   end
 }
 
-return M;
+return M

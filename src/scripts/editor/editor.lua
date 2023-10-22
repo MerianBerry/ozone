@@ -1,8 +1,8 @@
-local oz = require "ozone"
+oz = require "ozone"
 
 M = {
   keypress = function(--[[int]] key)
-
+     
   end,
   update = function() 
 
