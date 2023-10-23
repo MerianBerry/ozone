@@ -219,6 +219,7 @@ void avl_destroysubtree(avl_tree_t *tree,
 	if (!root)
 		return;
 	free(root->key);
+  free(root->mem);
 	avl_destroysubtree(tree, root->left);
 	avl_destroysubtree(tree, root->right);
 	if (tree->size > 0)
@@ -266,16 +267,7 @@ void avl_clear(avl_tree_t *bintree)
 	bintree->size = 0;
 }
 
-void avl_free(avl_tree_t **bintree)
-{
-	avl_destroysubtree(*bintree, (*bintree)->root);
-	(*bintree)->root = NULL;
-	(*bintree)->size = 0;
-	free((*bintree));
-	*bintree = NULL;
-}
-
-void avl_freeX(avl_tree_t *bintree)
+void avl_free(avl_tree_t *bintree)
 {
 	avl_destroysubtree(bintree, bintree->root);
 	bintree->root = NULL;
@@ -286,6 +278,7 @@ void avl_freeX(avl_tree_t *bintree)
 avl_tree_t *avl_newtree()
 {
 	avl_tree_t *ptr = (avl_tree_t*)malloc(sizeof(avl_tree_t));
+	memset(ptr, 0, sizeof(avl_tree_t));
 	return ptr;
 }
 

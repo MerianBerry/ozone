@@ -18,11 +18,12 @@ int main(int argc, char **argv) {
   env.h = LINES;
   env.tabsize = 2;
   env.doubleclickt = 500.f;
+  /*
   env.theme.fores[fore_plain_e] = (color_t){80, 82, 84};
   env.theme.backs[back_primary_e] = (color_t){36, 36, 35};
   env.theme.backs[back_highlight_e] = (color_t){51, 52, 54};
   env.theme.fores[fore_green_e] = (color_t){37, 186, 104};
-
+  */
   setlocale(LC_CTYPE, "");
 
   io_mkdir("~/.ozone/test");
@@ -71,7 +72,7 @@ int main(int argc, char **argv) {
   mousemask(BUTTON1_PRESSED | BUTTON1_RELEASED, NULL);
   mouseinterval(0);
 
-  sty_initplain(&env.theme);
+  //sty_initplain(&env.theme);
   
   resize_buffers(&env);
 
@@ -85,7 +86,8 @@ int main(int argc, char **argv) {
   timepoint_t lclick;
   char lclickstate = 0;
   do {
-    sty_initplain(&env.theme);
+    //sty_initplain(&env.theme);
+    /*
     {
       style_t edge = {0};
       edge.back = env.theme.backs[back_highlight_e];
@@ -116,6 +118,7 @@ int main(int argc, char **argv) {
       free(s);
       sty_pushstyle(&env.theme, old);
     }
+    */
     move(0, 0);
     switch (ch) {
       case KEY_RESIZE: {
@@ -138,12 +141,12 @@ int main(int argc, char **argv) {
             if (timeduration(timenow(), lclick, milliseconds_e) < env.doubleclickt
             && abs(y-mev.y)<=2 && abs(x-mev.x)<=2
             && !lclickstate) {
-              style_t old = sty_getstyle(&env.theme);
+              /*style_t old = sty_getstyle(&env.theme);
               style_t sg = old;
               sg.fore = env.theme.fores[fore_green_e];
-              sty_pushstyle(&env.theme, sg);
+              sty_pushstyle(&env.theme, sg);*/
               mvprintw(1,5,"Double click!\n");
-              sty_pushstyle(&env.theme, old);
+              //sty_pushstyle(&env.theme, old);
               lclick = (timepoint_t){0};
               lclickstate = 1;
             } else {
@@ -181,7 +184,13 @@ int main(int argc, char **argv) {
   endwin();
   
 
-
+  // CLEAN-UP
+  for (int i = 0; i < env.themec; ++i) {
+    theme_t *t = env.themev+i;
+    avl_free(t->pairs);
+    free((void*)t->name);
+  }
+  free(env.themev);
 
 
 }

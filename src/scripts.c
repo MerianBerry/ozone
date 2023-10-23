@@ -19,9 +19,7 @@ lua_State *lsc_prepstate(void *env) {
   free(cpath);
   lua_pushinteger(L, (long)env);
   lua_setglobal(L, "__OZENV");
-  lua_register(L, "__ozapi_fun", ozapi_fun);
-  lua_register(L, "__ozapi_setstyle", ozapi_setstyle);
-  lua_register(L, "__ozapi_addtheme", ozapi_addtheme);
+  lua_register(L, "__ozapi_addplug", ozapi_addplug);
   return L;
 }
 

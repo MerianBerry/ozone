@@ -1,12 +1,13 @@
 #include "theme.h"
 #include <ncurses.h>
+#include "ozone.h"
 
 #define rgb8b(r, g, b) (short)(r/255.f*1000.f), (short)(g/255.f*1000.f), (short)(b/255.f*1000.f)
 
 char compare_colors(color_t c1, color_t c2) {
   return c1.r==c2.r && c1.g==c2.g && c1.b==c2.b;
 }
-
+/*
 int sty_pushstyle(theme_t *t, style_t s) {
   if (t->stylei >= 255)
     return -1;
@@ -74,3 +75,4 @@ void sty_initplain(theme_t *t) {
   t->current = t->styles[plain_pair_e];
   ++t->stylei;
 }
+*/

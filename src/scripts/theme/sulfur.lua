@@ -1,5 +1,3 @@
-oz = require "ozone"
-
 local palette = {
   bg0 = "#2b2823",
   bg1 = "#24221f",
@@ -8,6 +6,7 @@ local palette = {
 }
 
 local M = {
+  type = "theme",
   name = "Sulfur",
   Normal = {fg = palette.fg0, bg = palette.bg0},
   Line = {fg = palette.fg1, bg = palette.bg0},

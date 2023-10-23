@@ -36,14 +36,7 @@ typedef struct style_s {
   color_t         back;
 } style_t;
 
-typedef struct theme_s {
-  color_t         backs[4];
-  color_t         fores[64];
-  style_t         styles[254];
-  int             stylei;
-  style_t         current;
-} theme_t;
-
+/*
 int sty_pushstyle(theme_t *t, style_t s);
 
 void sty_resetstyles(theme_t *t);
@@ -59,3 +52,4 @@ void sty_swap(theme_t *t);
 style_t sty_swapstyle(style_t s);
 
 void sty_initplain(theme_t *t);
+*/

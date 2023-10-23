@@ -13,7 +13,6 @@
 #	define __USE_MISC
 #endif
 #include <dirent.h>
-#include "theme.h"
 #include <ncurses.h>
 #include <form.h>
 #include <locale.h>
@@ -104,9 +103,7 @@ void avl_append(avl_tree_t *bintree,
 void avl_destroysubtree(avl_tree_t *tree,
 	avl_node_t*  root);
 
-void avl_free(avl_tree_t **bintree);
-
-void avl_freeX(avl_tree_t *bintree);
+void avl_free(avl_tree_t *bintree);
 
 void avl_destroynode(avl_tree_t *tree, avl_node_t *node);
 
@@ -122,7 +119,7 @@ avl_tree_t *avl_newtree();
 
 char *str_add(char * lhs, const char * rhs);
 
-const char *substr(const char * src,
+const char *str_substr(const char * src,
 	size_t off, size_t len);
 
 size_t str_ffo(const char * str, char c);
@@ -185,6 +182,15 @@ char io_exists(const char *path);
 
 void io_mkdir(const char *path);
 
+void *mem_todynamic(void *mem, size_t size);
+
+void *mem_growvec(void *src, void *new, int stride, int c, int nc);
+
+typedef struct theme_s {
+  const char        *name;
+  avl_tree_t        *pairs;
+} theme_t;
+
 typedef struct _env {
   int*              background;
   int*              foreground;
@@ -193,10 +199,8 @@ typedef struct _env {
 	avl_tree_t				*pairs;
 	int								tabsize;
 	float							doubleclickt;
-	theme_t						theme;
-	style_t						style;
-
-  
+  theme_t           *themev;
+  int               themec;
 } _ENV;
 
 char valid_size(const _ENV *env);

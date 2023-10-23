@@ -5,10 +5,9 @@ M = {
      
   end,
   update = function() 
-
   end,
   init = function()
-    print("Hello")
+    
   end,
 }
 
