@@ -1,5 +1,6 @@
 #include "scripts.h"
 #include "ozone.h"
+#include "theme.h"
 
 #if !defined(MAX)
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -11,6 +12,8 @@
 #define CLAMP(x, y, z) MAX(y, MIN(z, x))
 #endif
 
+#define rgb8(n) (short)((float)n/255.f*1000)
+
 
 int main(int argc, char **argv) {
   _ENV env = {0};
@@ -18,27 +21,16 @@ int main(int argc, char **argv) {
   env.h = LINES;
   env.tabsize = 2;
   env.doubleclickt = 500.f;
-  /*
-  env.theme.fores[fore_plain_e] = (color_t){80, 82, 84};
-  env.theme.backs[back_primary_e] = (color_t){36, 36, 35};
-  env.theme.backs[back_highlight_e] = (color_t){51, 52, 54};
-  env.theme.fores[fore_green_e] = (color_t){37, 186, 104};
-  */
+
   setlocale(LC_CTYPE, "");
 
   io_mkdir("~/.ozone/test");
 
   lua_State *L = lsc_prepstate(&env);
-  lsc_runscript(L, "~/.ozone/scripts/config.lua");
-
+  lsc_runscript(L, "~/.ozone/scripts/config.lua"); 
   
-  
-
   // TODO: Add utf8 support to the string helper functions
   
-  //resize_buffers(&env);
-  
-
   initscr();
   cbreak();
   keypad(stdscr, TRUE);
@@ -46,6 +38,12 @@ int main(int argc, char **argv) {
   set_tabsize(env.tabsize);
   noecho();
   start_color();
+  
+  style_t s = *(style_t*)avl_find(env.themev[0].pairs, "Normal")->mem;
+  init_color(1, rgb8(s.fore.r), rgb8(s.fore.g), rgb8(s.fore.b));
+  init_color(2, rgb8(s.back.r), rgb8(s.back.g), rgb8(s.back.b));
+  init_pair(1, 1, 2);
+  bkgd(COLOR_PAIR(1));
 
   #if 0
   FIELD *field[3];
@@ -71,8 +69,6 @@ int main(int argc, char **argv) {
   // Don't mask any mouse events
   mousemask(BUTTON1_PRESSED | BUTTON1_RELEASED, NULL);
   mouseinterval(0);
-
-  //sty_initplain(&env.theme);
   
   resize_buffers(&env);
 
@@ -131,26 +127,20 @@ int main(int argc, char **argv) {
         if (getmouse(&mev) == OK) {
           ch = mev.bstate;
           ++rsz;
-          mvprintw(0, 5, "%i, %i\n", y-mev.y, x-mev.x);
           if (mev.bstate == 2) {
-            mvprintw(3, 5, "Click!\n");
+            mvprintw(1, 0, "Click!\n");
           } else {
-            mvprintw(3, 5, "No click!\n");
+            mvprintw(1, 0, "No click!\n");
           }
           if (mev.bstate == 2) {
             if (timeduration(timenow(), lclick, milliseconds_e) < env.doubleclickt
             && abs(y-mev.y)<=2 && abs(x-mev.x)<=2
             && !lclickstate) {
-              /*style_t old = sty_getstyle(&env.theme);
-              style_t sg = old;
-              sg.fore = env.theme.fores[fore_green_e];
-              sty_pushstyle(&env.theme, sg);*/
-              mvprintw(1,5,"Double click!\n");
-              //sty_pushstyle(&env.theme, old);
+              mvprintw(0,0,"Double click!\n");
               lclick = (timepoint_t){0};
               lclickstate = 1;
             } else {
-              mvprintw(1,5,"Single click!\n");
+              mvprintw(0,0,"Single click!\n");
               lclickstate = 0;
             }
             lclick = timenow();
@@ -164,13 +154,9 @@ int main(int argc, char **argv) {
       }
       default:
       break;
-    }
-    
-    mvprintw(2, 5,"%i, %i, %i, %i ", env.w, env.h, rsz, ch);
-    //printw("\n");
+    } 
     move(y, x);
     refresh();
-    //sty_resetstyles(&env.theme);
   } while ((ch = getch()) != 0x1b);
 
 

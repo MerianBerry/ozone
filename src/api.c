@@ -96,16 +96,21 @@ style_t groupfield(lua_State *L, int indx, const char *field) {
   style_t sty = {0};
   sty.fore = fg;
   sty.back = bg;
+  lua_pop(L, 1);
   return sty;
-} 
+}
+
+void add_groupfield(lua_State *L, int indx, theme_t *t, const char *field) {
+  style_t g = groupfield(L, indx, field);
+  avl_append(t->pairs, field, mem_todynamic(&g, sizeof(g)));
+}
 
 int oz_addtheme(_ENV *env, int indx, lua_State *L) {
   theme_t t = {0};
   t.name = str_cpy(l_strfield(L, indx, "name"), npos);
   t.pairs = avl_newtree();
-  style_t norm = groupfield(L, indx, "Normal"); 
-  avl_append(t.pairs, "Normal", mem_todynamic(&norm, sizeof(norm)));
-
+  add_groupfield(L, indx, &t, "Normal");
+  add_groupfield(L, indx, &t, "Comment");
   void *oldthemev = env->themev;
   env->themev = mem_growvec(env->themev, &t, sizeof(theme_t), 
     env->themec, 1);
